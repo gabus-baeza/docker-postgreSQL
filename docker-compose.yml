@@ -1,16 +1,33 @@
+version: "3.8"
+
 services:
   postgres:
-    build: . #Construir contenedor usando Dockerfile presente en el directorio actual (.)
-    container_name: ContDBpractMod3 # Nombre del contenedor
+    build: . # o usa image: postgres:latest si no tienes Dockerfile
+    container_name: ContDBpractMod3
     ports:
-      - "5433:5432" # Puerto para conectar desde tu máquina host al contenedor
+      - "5433:5432"
     environment:
-      POSTGRES_USER: Admin # Usuario de la base de datos
-      POSTGRES_PASSWORD: p4ssw0rdDB # Contraseña del usuario
-      POSTGRES_DB: credenciales # Nombre de la base de datos
+      POSTGRES_USER: Admin
+      POSTGRES_PASSWORD: p4ssw0rdDB
+      POSTGRES_DB: credenciales
     volumes:
-      - postgres_data:/var/lib/postgresql/data # Espacio donde los datos se conservarán, al detener el contenedor.
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: ContPgAdmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80" # podrás abrir pgAdmin en tu navegador en localhost:8080
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
 
 volumes:
   postgres_data:
+    driver: local
+  pgadmin_data:
     driver: local
